@@ -14,6 +14,7 @@
   <body ng-controller="CidadesController">
         <div class="container">
             <button class="btn btn-default" type="button" ng-click="salvar(projects.projects[0])">{{projects}}</button>
+            <button class="btn btn-default" type="button" ng-click="clearState()">limpar memória</button>
             <div class="row">
                     <table class="table table-hover table-striped">
                         <thead>
@@ -28,8 +29,8 @@
                                 <td>{{$index}}</td>
                                 <td>{{project}}</td>
                                 <td>
-                                    <button type="button" class="btn btn-danger btn-xs" ng-click="listSpidersAndJobs(project)">
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    <button type="button" class="btn btn-danger btn-xs" ng-click="listSpiders(project)">
+                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -48,11 +49,14 @@
                                 <td>{{$index}}</td>
                                 <td>{{spider}}</td>
                                 <td>
-                                    <button type="button" class="btn btn-danger btn-xs" ng-click="listFiles(spider)">
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    <button type="button" class="btn btn-danger btn-xs" ng-click="listFilesAndJobs(spider)">
+                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                     </button>
                                     <button type="button" class="btn btn-danger btn-xs" ng-click="schedule(spider)">
-                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                        <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-xs" ng-click="scheduleWithState(spider)">
+                                        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -70,12 +74,13 @@
                         <tbody>
                             <tr ng-repeat="file in files">
                                 <td>{{$index}}</td>
-                                <td>{{file}}</td>
+                                <td>{{file | limitTo:file.length-3}}</td>
                                 <td>
                                     <!-- <button type="button" class="btn btn-danger btn-xs" ng-click="showFile(file)">
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                                     </button> -->
-                                    <a ng-href="http://localhost:6800/items/{{_project}}/{{_spider}}/{{file}}"> ver </a>
+                                    <a ng-href="http://localhost:6800/items/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.jl"> items </a>
+                                    <a ng-href="http://localhost:6800/logs/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.log"> log </a>
                                 </td>
                             </tr>
                         </tbody>
@@ -94,8 +99,10 @@
                                 <td>{{$index}}</td>
                                 <td>{{job}}</td>
                                 <td>
-                                    <button type="button" class="btn btn-danger btn-xs" ng-click="schedule()">
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    <a ng-href="http://localhost:6800/items/{{_project}}/{{_spider}}/{{job.id}}.jl"> items </a>
+                                    <a ng-href="http://localhost:6800/logs/{{_project}}/{{_spider}}/{{job.id}}.log"> log </a>
+                                    <button type="button" class="btn btn-danger btn-xs" ng-click="cancel(project, job)">
+                                        <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>

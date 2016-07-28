@@ -13,6 +13,11 @@
                 });
             }
 
+            $scope.listFilesAndJobs = function (project) {
+                $scope.listFiles(project);
+                $scope.listJobs(project);
+            }
+
             $scope.listSpidersAndJobs = function (project) {
                 $scope.listSpiders(project);
                 $scope.listJobs(project);
@@ -59,9 +64,7 @@
                     }
                 }).then(function (response) {
                     if (response.status == "200") {
-                        //console.log(JSON.stringify(data));
-                        //console.log(JSON.parse(response.data));
-                        //$scope.files = JSON.parse(response.data);
+                        console.log(response.data);
                         $scope.files = response.data;
                     }
                     else {
@@ -103,8 +106,23 @@
                 $http({
                     url: 'http://localhost:6800/schedule.json',
                     method: "POST",
-                    //params: {project: $scope._project, spider : spider}
-                    params: {project: $scope._project, spider: spider, setting: 'JOBDIR=C:/scrapyd/state'}
+                    params: {project: $scope._project, spider: spider}
+                }).then(function (response) {
+                    if (response.data.status === "ok") {
+                        $scope.listSpidersAndJobs($scope._project);
+
+                    }
+                    else {
+                        alert("Error while scheduling job : " + response.data.message);
+                    }
+                });
+            };
+
+            $scope.scheduleWithState = function (spider) {
+                $http({
+                    url: 'http://localhost:6800/schedule.json',
+                    method: "POST",
+                    params: {project: $scope._project, spider: spider, setting: 'JOBDIR=/scrapyd/state'}
                 }).then(function (response) {
                     if (response.data.status === "ok") {
                         $scope.listSpidersAndJobs($scope._project);
@@ -116,6 +134,24 @@
                     }
                 });
             };
+
+            $scope.cancel = function (project, job) {
+                $http({
+                    url: 'http://localhost:6800/cancel.json',
+                    method: "POST",
+                    params: { project: $scope._project, job: job }
+                }).then(function (response) {
+                    if (response.data.status === "ok") {
+                        $scope.listSpidersAndJobs($scope._project);
+
+                    }
+                    else {
+                        //alert("Error while scheduling job : " + JSON.stringify(dados) );
+                        alert("Error while scheduling job : " + response.data.message);
+                    }
+                });
+            };
+
         });
 
 })();

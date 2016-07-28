@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br" ng-app="cidades">
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Gerenciador de cidades</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+	<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular.js"></script>
+    <script src="app.js"></script>
+  </head>
+
+  <body ng-controller="CidadesController">
+        <div class="container">
+			<button
+            <button class="btn btn-default" type="button" ng-click="salvar(projects.projects[0])">{{projects}}</button>
+
+            <div class="row">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nome</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="project in projects">
+                                <td>{{$index}}</td>
+                                <td>{{project}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-xs" ng-click="selectProject(project)">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nome</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="spider in spiders">
+                                <td>{{$index}}</td>
+                                <td>{{spider}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-xs" ng-click="selectSpider(spider)">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-xs" ng-click="schedule(spider)">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nome</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="file in files">
+                                <td>{{$index}}</td>
+                                <td>{{file}}</td>
+                                <td>
+                                    <!-- <button type="button" class="btn btn-danger btn-xs" ng-click="showFile(file)">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </button> -->
+                                    <a ng-href="http://localhost:6800/items/{{_project}}/{{_spider}}/{{file}}"> tsete </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nome</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="job in jobsRunning">
+                                <td>{{$index}}</td>
+                                <td>{{job}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-xs" ng-click="schedule()">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+  </body>
+
+</html>

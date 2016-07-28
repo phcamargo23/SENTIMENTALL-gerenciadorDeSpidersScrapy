@@ -13,28 +13,27 @@
                 });
             }
 
-            $scope.listFilesAndJobs = function (project) {
-                $scope.listFiles(project);
-                $scope.listJobs(project);
-            }
-
             $scope.listSpidersAndJobs = function (project) {
                 $scope.listSpiders(project);
                 $scope.listJobs(project);
             }
 
-            $scope.listSpiders = function (project) {
+            $scope.listFilesAndJobs = function (spider) {
+                $scope.listFiles(spider);
+                $scope.listJobs($scope._project);
 
+                $scope._spider = spider;
+            }
+
+            $scope.listSpiders = function (project) {
                 $http({
                     url: 'http://localhost:6800/listspiders.json',
                     method: "GET",
                     params: {project: project}
                 }).success(function (dados) {
-                    //console.log(dados);
                     $scope.spiders = dados.spiders;
-                    $scope._project = project;
-                    //alert("Error : "+JSON.stringify(dados));
                 });
+                $scope._project = project;
             };
 
             $scope.listJobs = function (project) {
@@ -52,7 +51,6 @@
             };
 
             $scope.listFiles = function (spider) {
-
                 var file = scrapydUrl + "items/" + $scope._project + "/" + spider;
 
                 $http({
@@ -72,10 +70,57 @@
                         console.log(response);
                     }
                 });
-
-                $scope._spider = spider;
-                //get_file(scrapydUrl + "items/" + $scope._project + "/" + $scope._spider);
             }
+
+            $scope.schedule = function (spider) {
+                $http({
+                    url: 'http://localhost:6800/schedule.json',
+                    method: "POST",
+                    params: {project: $scope._project, spider: spider }
+                }).then(function (response) {
+                    if (response.data.status === "ok") {
+                        $scope.listFilesAndJobs($scope._project);
+
+                    }
+                    else {
+                        alert("Error while scheduling job : " + response.data.message);
+                    }
+                });
+            };
+
+            $scope.scheduleWithState = function (spider) {
+                $http({
+                    url: 'http://localhost:6800/schedule.json',
+                    method: "POST",
+                    params: {project: $scope._project, spider: spider, setting: 'JOBDIR=/scrapyd/state'}
+                }).then(function (response) {
+                    if (response.data.status === "ok") {
+                        $scope.listFilesAndJobs($scope._project);
+
+                    }
+                    else {
+                        //alert("Error while scheduling job : " + JSON.stringify(dados) );
+                        alert("Error while scheduling job : " + response.data.message);
+                    }
+                });
+            };
+
+            $scope.cancel = function (project, job) {
+                $http({
+                    url: 'http://localhost:6800/cancel.json',
+                    method: "POST",
+                    params: { project: $scope._project, job: job }
+                }).then(function (response) {
+                    if (response.data.status === "ok") {
+                        $scope.listFilesAndJobs($scope._project);
+
+                    }
+                    else {
+                        //alert("Error while scheduling job : " + JSON.stringify(dados) );
+                        alert("Error while scheduling job : " + response.data.message);
+                    }
+                });
+            };
 
             function showFile(file) {
                 file = scrapydUrl + "items/" + $scope._project + "/" + $scope._spider + "/" + file;
@@ -101,56 +146,6 @@
                 });
 
             }
-
-            $scope.schedule = function (spider) {
-                $http({
-                    url: 'http://localhost:6800/schedule.json',
-                    method: "POST",
-                    params: {project: $scope._project, spider: spider}
-                }).then(function (response) {
-                    if (response.data.status === "ok") {
-                        $scope.listSpidersAndJobs($scope._project);
-
-                    }
-                    else {
-                        alert("Error while scheduling job : " + response.data.message);
-                    }
-                });
-            };
-
-            $scope.scheduleWithState = function (spider) {
-                $http({
-                    url: 'http://localhost:6800/schedule.json',
-                    method: "POST",
-                    params: {project: $scope._project, spider: spider, setting: 'JOBDIR=/scrapyd/state'}
-                }).then(function (response) {
-                    if (response.data.status === "ok") {
-                        $scope.listSpidersAndJobs($scope._project);
-
-                    }
-                    else {
-                        //alert("Error while scheduling job : " + JSON.stringify(dados) );
-                        alert("Error while scheduling job : " + response.data.message);
-                    }
-                });
-            };
-
-            $scope.cancel = function (project, job) {
-                $http({
-                    url: 'http://localhost:6800/cancel.json',
-                    method: "POST",
-                    params: { project: $scope._project, job: job }
-                }).then(function (response) {
-                    if (response.data.status === "ok") {
-                        $scope.listSpidersAndJobs($scope._project);
-
-                    }
-                    else {
-                        //alert("Error while scheduling job : " + JSON.stringify(dados) );
-                        alert("Error while scheduling job : " + response.data.message);
-                    }
-                });
-            };
 
         });
 

@@ -33,6 +33,7 @@
                 }).success(function (dados) {
                     $scope.spiders = dados.spiders;
                 });
+
                 $scope._project = project;
             };
 
@@ -62,12 +63,12 @@
                     }
                 }).then(function (response) {
                     if (response.status == "200") {
-                        console.log(response.data);
+                        //console.log(response.data);
                         $scope.files = response.data;
                     }
                     else {
-                        //alert("Error while scheduling job : " + response.data.message );
-                        console.log(response);
+                        alert("Error while scheduling job : " + response.data.message );
+                        //console.log(response);
                     }
                 });
             }
@@ -79,7 +80,7 @@
                     params: {project: $scope._project, spider: spider }
                 }).then(function (response) {
                     if (response.data.status === "ok") {
-                        $scope.listFilesAndJobs($scope._project);
+                        $scope.listFilesAndJobs(spider);
 
                     }
                     else {
@@ -95,7 +96,7 @@
                     params: {project: $scope._project, spider: spider, setting: 'JOBDIR=/scrapyd/state'}
                 }).then(function (response) {
                     if (response.data.status === "ok") {
-                        $scope.listFilesAndJobs($scope._project);
+                        $scope.listFilesAndJobs(spider);
 
                     }
                     else {
@@ -109,14 +110,18 @@
                 $http({
                     url: 'http://localhost:6800/cancel.json',
                     method: "POST",
-                    params: { project: $scope._project, job: job }
+                    params: { project: project, job: job }
                 }).then(function (response) {
-                    if (response.data.status === "ok") {
-                        $scope.listFilesAndJobs($scope._project);
+                    if (response.status == "200") {
+                        alert("Job cancelado com sucesso!");
+                        $scope.listFilesAndJobs($scope._spider);
 
                     }
                     else {
                         //alert("Error while scheduling job : " + JSON.stringify(dados) );
+                        // console.log(response);
+                        // console.log(project);
+                        // console.log(job);
                         alert("Error while scheduling job : " + response.data.message);
                     }
                 });
@@ -140,8 +145,8 @@
                         $scope.files = response.data;
                     }
                     else {
-                        //alert("Error while scheduling job : " + response.data.message );
-                        console.log(response);
+                        alert("Error while scheduling job : " + response.data.message );
+                        //console.log(response);
                     }
                 });
 

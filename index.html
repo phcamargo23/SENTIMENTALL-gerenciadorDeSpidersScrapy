@@ -101,7 +101,7 @@
                                 <td>
                                     <a ng-href="http://localhost:6800/items/{{_project}}/{{_spider}}/{{job.id}}.jl"> items </a>
                                     <a ng-href="http://localhost:6800/logs/{{_project}}/{{_spider}}/{{job.id}}.log"> log </a>
-                                    <button type="button" class="btn btn-danger btn-xs" ng-click="cancel(project, job)">
+                                    <button type="button" class="btn btn-danger btn-xs" ng-click="cancel(_project, job.id)">
                                         <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
                                     </button>
                                 </td>

@@ -2,13 +2,13 @@
 
     angular.module('cidades', [])
         .controller('CidadesController', function ($scope, $http) {
-            var scrapydUrl = 'http://localhost:6800/';
+            $scope._scrapydUrl = 'http://192.168.2.38:6800/';
             var scrapydUiUrl = 'http://localhost/estagio/';
 
             listProjects();
 
             function listProjects() {
-                $http.get('http://localhost:6800/listprojects.json').success(function (dados) {
+                $http.get($scope._scrapydUrl+'listprojects.json').success(function (dados) {
                     $scope.projects = dados.projects;
                 });
             }
@@ -27,7 +27,7 @@
 
             $scope.listSpiders = function (project) {
                 $http({
-                    url: 'http://localhost:6800/listspiders.json',
+                    url: $scope._scrapydUrl+'listspiders.json',
                     method: "GET",
                     params: {project: project}
                 }).success(function (dados) {
@@ -40,10 +40,11 @@
             $scope.listJobs = function (project) {
 
                 $http({
-                    url: 'http://localhost:6800/listjobs.json',
+                    url: $scope._scrapydUrl+'listjobs.json',
                     method: "GET",
                     params: {project: project}
                 }).success(function (dados) {
+                    console.log(dados);
                     $scope.jobsPending = dados.pending;
                     $scope.jobsRunning = dados.running;
                     $scope.jobsFinished = dados.finished;
@@ -52,7 +53,7 @@
             };
 
             $scope.listFiles = function (spider) {
-                var file = scrapydUrl + "items/" + $scope._project + "/" + spider;
+                var file = $scope._scrapydUrl + "items/" + $scope._project + "/" + spider;
 
                 $http({
                     url: scrapydUiUrl + 'getFile.php',
@@ -75,15 +76,15 @@
 
             $scope.schedule = function (spider) {
                 $http({
-                    url: 'http://localhost:6800/schedule.json',
+                    url: $scope._scrapydUrl+'schedule.json',
                     method: "POST",
                     params: {project: $scope._project, spider: spider }
                 }).then(function (response) {
                     if (response.data.status === "ok") {
                         $scope.listFilesAndJobs(spider);
-
                     }
                     else {
+                        console.log(response);
                         alert("Error while scheduling job : " + response.data.message);
                     }
                 });
@@ -91,13 +92,12 @@
 
             $scope.scheduleWithState = function (spider) {
                 $http({
-                    url: 'http://localhost:6800/schedule.json',
+                    url: $scope._scrapydUrl+'schedule.json',
                     method: "POST",
-                    params: {project: $scope._project, spider: spider, setting: 'JOBDIR=/scrapyd/state'}
+                    params: {project: $scope._project, spider: spider, setting: 'JOBDIR=/home/osboxes/Documents/scrapyd/state'}
                 }).then(function (response) {
                     if (response.data.status === "ok") {
                         $scope.listFilesAndJobs(spider);
-
                     }
                     else {
                         //alert("Error while scheduling job : " + JSON.stringify(dados) );
@@ -108,7 +108,7 @@
 
             $scope.cancel = function (project, job) {
                 $http({
-                    url: 'http://localhost:6800/cancel.json',
+                    url: $scope._scrapydUrl+'cancel.json',
                     method: "POST",
                     params: { project: project, job: job }
                 }).then(function (response) {
@@ -128,7 +128,7 @@
             };
 
             function showFile(file) {
-                file = scrapydUrl + "items/" + $scope._project + "/" + $scope._spider + "/" + file;
+                file = $scope._scrapydUrl + "items/" + $scope._project + "/" + $scope._spider + "/" + file;
 
                 $http({
                     url: scrapydUiUrl + 'getFile.php',

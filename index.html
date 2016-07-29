@@ -79,8 +79,8 @@
                                     <!-- <button type="button" class="btn btn-danger btn-xs" ng-click="showFile(file)">
                                         <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                                     </button> -->
-                                    <a ng-href="http://localhost:6800/items/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.jl"> items </a>
-                                    <a ng-href="http://localhost:6800/logs/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.log"> log </a>
+                                    <a ng-href="{{_scrapydUrl}}items/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.jl"> items </a>
+                                    <a ng-href="{{_scrapydUrl}}logs/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.log"> log </a>
                                 </td>
                             </tr>
                         </tbody>
@@ -99,8 +99,8 @@
                                 <td>{{$index}}</td>
                                 <td>{{job}}</td>
                                 <td>
-                                    <a ng-href="http://localhost:6800/items/{{_project}}/{{_spider}}/{{job.id}}.jl"> items </a>
-                                    <a ng-href="http://localhost:6800/logs/{{_project}}/{{_spider}}/{{job.id}}.log"> log </a>
+                                    <a ng-href="{{_scrapydUrl}}items/{{_project}}/{{_spider}}/{{job.id}}.jl"> items </a>
+                                    <a ng-href="{{_scrapydUrl}}logs/{{_project}}/{{_spider}}/{{job.id}}.log"> log </a>
                                     <button type="button" class="btn btn-danger btn-xs" ng-click="cancel(_project, job.id)">
                                         <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
                                     </button>

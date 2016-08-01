@@ -2,10 +2,11 @@
 
     angular.module('cidades', [])
         .controller('CidadesController', function ($scope, $http) {
-            $scope._scrapydUrl = 'http://192.168.2.38:6800/';
+            $scope._scrapydUrl = 'http://localhost:6800/';
             var scrapydUiUrl = 'http://localhost/estagio/';
 
             listProjects();
+            // showFile('http://localhost:6800/logs/tutorial/lab/8d534a1e55e011e69fa8e02a82c94e65.log');
 
             function listProjects() {
                 $http.get($scope._scrapydUrl+'listprojects.json').success(function (dados) {
@@ -44,10 +45,10 @@
                     method: "GET",
                     params: {project: project}
                 }).success(function (dados) {
-                    console.log(dados);
-                    $scope.jobsPending = dados.pending;
+                    // console.log(dados);
+                    // $scope.jobsPending = dados.pending;
                     $scope.jobsRunning = dados.running;
-                    $scope.jobsFinished = dados.finished;
+                    // $scope.jobsFinished = dados.finished;
                 });
 
             };
@@ -65,7 +66,20 @@
                 }).then(function (response) {
                     if (response.status == "200") {
                         //console.log(response.data);
-                        $scope.files = response.data;
+
+                        var re = /(a href\=\")([^\?\"]*)(\")/gmi;
+                        var str = response.data;
+                        var match;
+                        var result = [];
+
+                        while ((match = re.exec(str)) !== null) {
+                            result.push(match[2]);
+                        }
+                        // console.log(JSON.stringify(result));
+                        // $scope.files = JSON.stringify(result);
+                        $scope.files = result;
+                        // console.log(response.data);
+                        // $scope.files = response.data;
                     }
                     else {
                         alert("Error while scheduling job : " + response.data.message );
@@ -127,29 +141,49 @@
                 });
             };
 
+            // function showFile(file) {
+            //     file = $scope._scrapydUrl + "items/" + $scope._project + "/" + $scope._spider + "/" + file;
+            //
+            //     $http({
+            //         url: scrapydUiUrl + 'getFile.php',
+            //         method: "POST",
+            //         params: {
+            //             'file': file
+            //         },
+            //         dataType: 'text'
+            //     }).then(function (response) {
+            //         if (response.status == "200") {
+            //             //console.log(JSON.stringify(data));
+            //             //console.log(JSON.parse(response.data));
+            //             //$scope.files = JSON.parse(response.data);
+            //             $scope.files = response.data;
+            //         }
+            //         else {
+            //             alert("Error while scheduling job : " + response.data.message );
+            //             //console.log(response);
+            //         }
+            //     });
+            //
+            // }
+
+
             function showFile(file) {
-                file = $scope._scrapydUrl + "items/" + $scope._project + "/" + $scope._spider + "/" + file;
+                $http.get(scrapydUiUrl + 'getFile.php?file='+file).success(function (dados) {
+                    (function(){
+                        var re = /'(finish_reason)': '(.*)',/;
+                        var str = dados;
+                        var match = re.exec(str);
+                        console.log(match[1]+': '+match[2]);
+                    })();
 
-                $http({
-                    url: scrapydUiUrl + 'getFile.php',
-                    method: "POST",
-                    params: {
-                        'file': file
-                    },
-                    dataType: 'text'
-                }).then(function (response) {
-                    if (response.status == "200") {
-                        //console.log(JSON.stringify(data));
-                        //console.log(JSON.parse(response.data));
-                        //$scope.files = JSON.parse(response.data);
-                        $scope.files = response.data;
-                    }
-                    else {
-                        alert("Error while scheduling job : " + response.data.message );
-                        //console.log(response);
-                    }
+                    (function(){
+                        var re = /'(item_scraped_count)': (\d*),/;
+                        var str = dados;
+                        var match = re.exec(str);
+                        console.log(match[1]+': '+match[2]);
+                    })();
+                    // console.log(dados);
                 });
-
             }
 
         });

@@ -4,10 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <title>Gerenciador de cidades</title>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
-	<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular.js"></script>
+	<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="node_modules/angular-loading-bar/build/loading-bar.min.css" />
+	<script src="node_modules/angular/angular.min.js"></script>
+	<script src="node_modules/angular-route/angular-route.min.js"></script>
+	<script src="node_modules/angular-animate/angular-animate.min.js"></script>
+	<script src="node_modules/angular-loading-bar/build/loading-bar.min.js"></script>
+	<script src="node_modules/jquery/dist/jquery.min.js"></script>
+	<script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="app.js"></script>
   </head>
 
@@ -29,7 +33,7 @@
                                 <td>{{$index}}</td>
                                 <td>{{project}}</td>
                                 <td>
-                                    <button type="button" class="btn btn-danger btn-xs" ng-click="listSpiders(project)">
+                                    <button type="button" class="btn btn-primary btn-xs" ng-click="listSpiders(project)">
                                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                     </button>
                                 </td>
@@ -49,13 +53,13 @@
                                 <td>{{$index}}</td>
                                 <td>{{spider}}</td>
                                 <td>
-                                    <button type="button" class="btn btn-danger btn-xs" ng-click="listFilesAndJobs(spider)">
+                                    <button type="button" class="btn btn-primary btn-xs" ng-click="listFilesAndJobs(spider)">
                                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                     </button>
-                                    <button type="button" class="btn btn-danger btn-xs" ng-click="schedule(spider)">
+                                    <button type="button" class="btn btn-primary btn-xs" ng-click="schedule(spider)">
                                         <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
                                     </button>
-                                    <button type="button" class="btn btn-danger btn-xs" ng-click="scheduleWithState(spider)">
+                                    <button type="button" class="btn btn-primary btn-xs" ng-click="scheduleWithState(spider)">
                                         <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                                     </button>
                                 </td>
@@ -67,21 +71,32 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Nome</th>
+                                <th>Job id</th>
+                                <th>Último estado</th>
+                                <th>Items raspados</th>
                                 <th>Ação</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr ng-repeat="file in files">
-                                <td>{{$index}}</td>
+                                <td>{{$index+1}}</td>
                                 <td>{{file | limitTo:file.length-3}}</td>
+                                <td>{{fileResume.ultimoEstado[$index]}}</td>
+                                <td>{{fileResume.itemsRaspados[$index]}}</td>
                                 <td>
-                                    <!-- <button type="button" class="btn btn-danger btn-xs" ng-click="showFile(file)">
-                                        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                                    </button> -->
+                                    <button type="button" class="btn btn-primary btn-xs" ng-click="showFileResume($index, file | limitTo:file.length-3)">
+                                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                                    </button>
                                     <a ng-href="{{_scrapydUrl}}items/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.jl"> items </a>
                                     <a ng-href="{{_scrapydUrl}}logs/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.log"> log </a>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td>Totais</td>
+                                <td>{{files.length}} job(s)</td>
+                                <td>-</td>
+                                <td>{{fileResume.totais['itemsRaspados']}}</td>
+                                <td>-</td>
                             </tr>
                         </tbody>
                     </table>
@@ -101,7 +116,7 @@
                                 <td>
                                     <a ng-href="{{_scrapydUrl}}items/{{_project}}/{{_spider}}/{{job.id}}.jl"> items </a>
                                     <a ng-href="{{_scrapydUrl}}logs/{{_project}}/{{_spider}}/{{job.id}}.log"> log </a>
-                                    <button type="button" class="btn btn-danger btn-xs" ng-click="cancel(_project, job.id)">
+                                    <button type="button" class="btn btn-cancel btn-xs" ng-click="cancel(_project, job.id)">
                                         <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
                                     </button>
                                 </td>

@@ -22,19 +22,20 @@ if (isset($_REQUEST['file'])) {
         }
     }
 
+//    $matches = array();
+//
+//    preg_match_all("/(a href\=\")([^\?\"]*)(\")/i", get_text($file), $matches);
+//
+//
+//    $a = array();
+//    foreach ($matches[2] as $match) {
+//        //echo $match . '<br>';
+//        array_push($a, $match);
+//    }
+//    //print_r($a);
+//    echo json_encode($a);
 
-    $matches = array();
-
-    preg_match_all("/(a href\=\")([^\?\"]*)(\")/i", get_text($file), $matches);
-
-
-    $a = array();
-    foreach ($matches[2] as $match) {
-        //echo $match . '<br>';
-        array_push($a, $match);
-    }
-    //print_r($a);
-    echo json_encode($a);
+    echo get_text($file);
 } else {
     echo "Parameter file is missing !";
 }

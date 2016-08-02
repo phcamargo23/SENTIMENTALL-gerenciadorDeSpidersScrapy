@@ -2,11 +2,11 @@
 
     angular.module('cidades', [])
         .controller('CidadesController', function ($scope, $http) {
-            $scope._scrapydUrl = 'http://localhost:6800/';
+            $scope._scrapydUrl = 'http://192.168.0.3:6800/';
             var scrapydUiUrl = 'http://localhost/estagio/';
+            $scope.fileResume = {ultimoEstado:[], itemsRaspados:[], totais:[]};
 
             listProjects();
-            // showFile('http://localhost:6800/logs/tutorial/lab/8d534a1e55e011e69fa8e02a82c94e65.log');
 
             function listProjects() {
                 $http.get($scope._scrapydUrl+'listprojects.json').success(function (dados) {
@@ -65,8 +65,6 @@
                     }
                 }).then(function (response) {
                     if (response.status == "200") {
-                        //console.log(response.data);
-
                         var re = /(a href\=\")([^\?\"]*)(\")/gmi;
                         var str = response.data;
                         var match;
@@ -75,11 +73,8 @@
                         while ((match = re.exec(str)) !== null) {
                             result.push(match[2]);
                         }
-                        // console.log(JSON.stringify(result));
-                        // $scope.files = JSON.stringify(result);
+
                         $scope.files = result;
-                        // console.log(response.data);
-                        // $scope.files = response.data;
                     }
                     else {
                         alert("Error while scheduling job : " + response.data.message );
@@ -167,22 +162,25 @@
             // }
 
 
-            function showFile(file) {
-                $http.get(scrapydUiUrl + 'getFile.php?file='+file).success(function (dados) {
-                    (function(){
-                        var re = /'(finish_reason)': '(.*)',/;
-                        var str = dados;
-                        var match = re.exec(str);
-                        console.log(match[1]+': '+match[2]);
-                    })();
+            $scope.showFileResume = function (index, file) {
+                $http.get(scrapydUiUrl + 'getFile.php?file='+$scope._scrapydUrl + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + ".log")
+                    .success(function (dados) {
 
-                    (function(){
-                        var re = /'(item_scraped_count)': (\d*),/;
-                        var str = dados;
-                        var match = re.exec(str);
-                        console.log(match[1]+': '+match[2]);
-                    })();
-                    // console.log(dados);
+                        (function(){
+                            var re = /'(finish_reason)': '(.*)',/;
+                            var str = dados;
+                            var match = re.exec(str);
+                            $scope.fileResume.ultimoEstado[index] = match[2];
+                            if ($scope.fileResume.totais['ultimoEstado'] == undefined) $scope.fileResume.totais['ultimoEstado'] = 0;
+                            $scope.fileResume.totais['ultimoEstado'] += $scope.fileResume.ultimoEstado[index];
+                        })();
+
+                        (function(){
+                            var re = /'(item_scraped_count)': (\d*),/;
+                            var str = dados;
+                            var match = re.exec(str);
+                            $scope.fileResume.itemsRaspados[index] = match[2];
+                        })();
                 });
             }
 

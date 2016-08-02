@@ -2,7 +2,7 @@
 
     angular.module('cidades', [])
         .controller('CidadesController', function ($scope, $http) {
-            $scope._scrapydUrl = 'http://192.168.0.3:6800/';
+            $scope._scrapydUrl = 'http://192.168.0.5:6800/';
             var scrapydUiUrl = 'http://localhost/estagio/';
             $scope.fileResume = {ultimoEstado:[], itemsRaspados:[], totais:[]};
 
@@ -171,8 +171,6 @@
                             var str = dados;
                             var match = re.exec(str);
                             $scope.fileResume.ultimoEstado[index] = match[2];
-                            if ($scope.fileResume.totais['ultimoEstado'] == undefined) $scope.fileResume.totais['ultimoEstado'] = 0;
-                            $scope.fileResume.totais['ultimoEstado'] += $scope.fileResume.ultimoEstado[index];
                         })();
 
                         (function(){
@@ -180,6 +178,8 @@
                             var str = dados;
                             var match = re.exec(str);
                             $scope.fileResume.itemsRaspados[index] = match[2];
+                            if ($scope.fileResume.totais['itemsRaspados'] == undefined) $scope.fileResume.totais['itemsRaspados'] = 0;
+                            $scope.fileResume.totais['itemsRaspados'] += parseInt($scope.fileResume.itemsRaspados[index]);
                         })();
                 });
             }

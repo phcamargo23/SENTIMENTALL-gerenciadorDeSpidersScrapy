@@ -2,7 +2,7 @@
 
     angular.module('cidades', [])
         .controller('CidadesController', function ($scope, $http) {
-            $scope._scrapydUrl = 'http://192.168.0.5:6800/';
+            $scope._scrapydUrl = 'http://192.168.2.38:6800/';
             var scrapydUiUrl = 'http://localhost/estagio/';
             $scope.fileResume = {ultimoEstado:[], itemsRaspados:[], totais:[]};
 
@@ -24,6 +24,7 @@
                 $scope.listJobs($scope._project);
 
                 $scope._spider = spider;
+                // $scope.fileResume.totais['itemsRaspados'] = 0;
             }
 
             $scope.listSpiders = function (project) {
@@ -103,9 +104,10 @@
                 $http({
                     url: $scope._scrapydUrl+'schedule.json',
                     method: "POST",
-                    params: {project: $scope._project, spider: spider, setting: 'JOBDIR=/home/osboxes/Documents/scrapyd/state'}
+                    params: {project: $scope._project, spider: spider, setting: 'JOBDIR=/home/osboxes/Documents/scrapyd/state/'+$scope._project +"/"+ spider}
                 }).then(function (response) {
                     if (response.data.status === "ok") {
+                        console.log(response);
                         $scope.listFilesAndJobs(spider);
                     }
                     else {
@@ -177,9 +179,9 @@
                             var re = /'(item_scraped_count)': (\d*),/;
                             var str = dados;
                             var match = re.exec(str);
-                            $scope.fileResume.itemsRaspados[index] = match[2];
-                            if ($scope.fileResume.totais['itemsRaspados'] == undefined) $scope.fileResume.totais['itemsRaspados'] = 0;
-                            $scope.fileResume.totais['itemsRaspados'] += parseInt($scope.fileResume.itemsRaspados[index]);
+                            $scope.fileResume.itemsRaspados[index] = (match[2] == null)?0:match[2];
+                            // if ($scope.fileResume.totais['itemsRaspados'] == undefined) $scope.fileResume.totais['itemsRaspados'] = 0;
+                            // $scope.fileResume.totais['itemsRaspados'] += parseInt($scope.fileResume.itemsRaspados[index]);
                         })();
                 });
             }

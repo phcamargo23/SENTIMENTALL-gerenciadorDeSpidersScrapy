@@ -87,8 +87,8 @@
                                     <button type="button" class="btn btn-primary btn-xs" ng-click="showFileResume($index, file | limitTo:file.length-3)">
                                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                                     </button>
-                                    <a ng-href="{{server}}items/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.jl"> items </a>
-                                    <a ng-href="{{server}}logs/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.log"> log </a>
+                                    <a ng-href="{{serverScrapyd}}items/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.jl"> items </a>
+                                    <a ng-href="{{serverScrapyd}}logs/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.log"> log </a>
                                 </td>
                             </tr>
                             <tr>
@@ -114,8 +114,8 @@
                                 <td>{{$index}}</td>
                                 <td>{{job}}</td>
                                 <td>
-                                    <a ng-href="{{server}}items/{{_project}}/{{_spider}}/{{job.id}}.jl"> items </a>
-                                    <a ng-href="{{server}}logs/{{_project}}/{{_spider}}/{{job.id}}.log"> log </a>
+                                    <a ng-href="{{serverScrapyd}}items/{{_project}}/{{_spider}}/{{job.id}}.jl"> items </a>
+                                    <a ng-href="{{serverScrapyd}}logs/{{_project}}/{{_spider}}/{{job.id}}.log"> log </a>
                                     <button type="button" class="btn btn-cancel btn-xs" ng-click="cancel(_project, job.id)">
                                         <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
                                     </button>

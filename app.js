@@ -1,15 +1,16 @@
 (function () {
 
     angular.module('cidades', [])
-        .controller('CidadesController', function ($scope, $http) {
-            $scope.server = 'http://192.168.2.38:6800/';
+        .controller('CidadesController', function ($scope, $http, $filter) {
+            $scope.serverScrapyd = 'http://localhost:6800/';
+            var serverScrapydLocalDir = '/scrapyd/';
             var client = 'http://localhost/estagio/';
             $scope.fileResume = {ultimoEstado:[], itemsRaspados:[], totais:[]};
 
             listProjects();
 
             function listProjects() {
-                $http.get($scope.server+'listprojects.json').success(function (dados) {
+                $http.get($scope.serverScrapyd+'listprojects.json').success(function (dados) {
                     $scope.projects = dados.projects;
                 });
             }
@@ -29,7 +30,7 @@
 
             $scope.listSpiders = function (project) {
                 $http({
-                    url: $scope.server+'listspiders.json',
+                    url: $scope.serverScrapyd+'listspiders.json',
                     method: "GET",
                     params: {project: project}
                 }).success(function (dados) {
@@ -42,7 +43,7 @@
             $scope.listJobs = function (project) {
 
                 $http({
-                    url: $scope.server+'listjobs.json',
+                    url: $scope.serverScrapyd+'listjobs.json',
                     method: "GET",
                     params: {project: project}
                 }).success(function (dados) {
@@ -56,7 +57,7 @@
 
             $scope.schedule = function (spider) {
                 $http({
-                    url: $scope.server+'schedule.json',
+                    url: $scope.serverScrapyd+'schedule.json',
                     method: "POST",
                     params: {project: $scope._project, spider: spider }
                 }).then(function (response) {
@@ -76,13 +77,13 @@
                 parameters.spider = spider;
                 parameters.setting = [
                     'FEED_FORMAT=csv',
-                    'FEED_URI=/home/osboxes/Documents/scrapyd/items/'+$scope._project +"/"+ spider + '/'+'teste.csv',
-                    'LOG_FILE=/home/osboxes/Documents/scrapyd/logs/'+$scope._project +"/"+ spider + '/'+'teste.log',
-                    'JOBDIR=/home/osboxes/Documents/scrapyd/state/'+$scope._project +"/"+ spider
+                    'FEED_URI='+serverScrapydLocalDir + 'jobs/items/' +$scope._project +"/"+ spider + '/' + $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss') + '.csv',
+                    'LOG_FILE='+serverScrapydLocalDir + 'jobs/logs/' +$scope._project +"/"+ spider + '/' + $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss') + '.log',
+                    'JOBDIR='+serverScrapydLocalDir + 'state/' + $scope._project +"/"+ spider
                 ];
 
                 $http({
-                    url: $scope.server+'schedule.json',
+                    url: $scope.serverScrapyd+'schedule.json',
                     method: "POST",
                     params: parameters
                     // setting: 'JOBDIR=/home/osboxes/Documents/scrapyd/state/'+$scope._project +"/"+ spider
@@ -100,7 +101,7 @@
 
             $scope.cancel = function (project, job) {
                 $http({
-                    url: $scope.server+'cancel.json',
+                    url: $scope.serverScrapyd+'cancel.json',
                     method: "POST",
                     params: { project: project, job: job }
                 }).then(function (response) {
@@ -120,7 +121,7 @@
             };
 
             $scope.listFiles = function (spider) {
-                var file = $scope.server + "items/" + $scope._project + "/" + spider;
+                var file = $scope.serverScrapyd + "items/" + $scope._project + "/" + spider;
 
                 $http({
                     url: client + 'getFile.php',
@@ -150,7 +151,7 @@
             }
 
             $scope.showFileResume = function (index, file) {
-                $http.get(client + 'getFile.php?file='+$scope.server + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + ".log")
+                $http.get(client + 'getFile.php?file='+$scope.serverScrapyd + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + ".log")
                     .success(function (dados) {
 
                         (function(){
@@ -172,7 +173,8 @@
             }
 
             $scope.clearAll = function () {
-                var dir = $scope.server + '/home/osboxes/Documents/scrapyd/items';
+                // var dir = '/home/osboxes/Documents/scrapyd/items';
+                var dir = serverScrapydLocalDir + '/jobs';
 
                     $http.get(client + 'delDir.php?dir='+dir)
                     .success(function (dados) {

@@ -2,7 +2,7 @@
 
     angular.module('cidades', [])
         .controller('CidadesController', function ($scope, $http) {
-            $scope._scrapydUrl = 'http://192.168.2.38:6800/';
+            $scope._scrapydUrl = 'http://localhost:6800/';
             var scrapydUiUrl = 'http://localhost/estagio/';
             $scope.fileResume = {ultimoEstado:[], itemsRaspados:[], totais:[]};
 
@@ -101,13 +101,24 @@
             };
 
             $scope.scheduleWithState = function (spider) {
+                var parameters = {};
+                parameters.project = $scope._project
+                parameters.spider = spider;
+                parameters.setting = [
+                    'FEED_FORMAT=csv',
+                    // 'FEED_URI=/scrapyd/items/'+$scope._project +"/"+ spider + '/'+'teste.csv',
+                    // 'LOG_FILE=/scrapyd/logs/'+$scope._project +"/"+ spider + '/'+'teste.log',
+                    'JOBDIR=/scrapyd/state/'+$scope._project +"/"+ spider
+                ];
+
                 $http({
                     url: $scope._scrapydUrl+'schedule.json',
                     method: "POST",
-                    params: {project: $scope._project, spider: spider, setting: 'JOBDIR=/home/osboxes/Documents/scrapyd/state/'+$scope._project +"/"+ spider}
+                    params: parameters
+                    // setting: 'JOBDIR=/home/osboxes/Documents/scrapyd/state/'+$scope._project +"/"+ spider
                 }).then(function (response) {
                     if (response.data.status === "ok") {
-                        console.log(response);
+                        //console.log(response);
                         $scope.listFilesAndJobs(spider);
                     }
                     else {

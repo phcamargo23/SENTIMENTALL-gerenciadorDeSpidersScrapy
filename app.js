@@ -3,7 +3,7 @@
     angular.module('cidades', [])
         .controller('CidadesController', function ($scope, $http, $filter) {
             $scope.serverScrapyd = 'http://localhost:6800/';
-            var serverScrapydLocalDir = '/scrapyd/';
+            var serverScrapydJobsDir = '/scrapyd/jobs/';
             var client = 'http://localhost/estagio/';
             $scope.fileResume = {ultimoEstado:[], itemsRaspados:[], totais:[]};
 
@@ -56,16 +56,24 @@
             };
 
             $scope.schedule = function (spider) {
+                var parameters = {};
+                parameters.project = $scope._project
+                parameters.spider = spider;
+                parameters.setting = [
+                    'FEED_FORMAT=csv',
+                    'FEED_URI='+serverScrapydJobsDir + 'items/' +$scope._project +"/"+ spider + '/' + $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss') + '.csv',
+                    'LOG_FILE='+serverScrapydJobsDir + 'logs/' +$scope._project +"/"+ spider + '/' + $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss') + '.log'
+                ];
+
                 $http({
                     url: $scope.serverScrapyd+'schedule.json',
                     method: "POST",
-                    params: {project: $scope._project, spider: spider }
+                    params: parameters
                 }).then(function (response) {
                     if (response.data.status === "ok") {
                         $scope.listFilesAndJobs(spider);
                     }
                     else {
-                        console.log(response);
                         alert("Error while scheduling job : " + response.data.message);
                     }
                 });
@@ -77,23 +85,20 @@
                 parameters.spider = spider;
                 parameters.setting = [
                     'FEED_FORMAT=csv',
-                    'FEED_URI='+serverScrapydLocalDir + 'jobs/items/' +$scope._project +"/"+ spider + '/' + $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss') + '.csv',
-                    'LOG_FILE='+serverScrapydLocalDir + 'jobs/logs/' +$scope._project +"/"+ spider + '/' + $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss') + '.log',
-                    'JOBDIR='+serverScrapydLocalDir + 'state/' + $scope._project +"/"+ spider
+                    'FEED_URI='+serverScrapydJobsDir + 'items/' +$scope._project +"/"+ spider + '/' + $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss') + '.csv',
+                    'LOG_FILE='+serverScrapydJobsDir + 'logs/' +$scope._project +"/"+ spider + '/' + $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss') + '.log',
+                    'JOBDIR='+serverScrapydJobsDir + 'state/' + $scope._project +"/"+ spider
                 ];
 
                 $http({
                     url: $scope.serverScrapyd+'schedule.json',
                     method: "POST",
                     params: parameters
-                    // setting: 'JOBDIR=/home/osboxes/Documents/scrapyd/state/'+$scope._project +"/"+ spider
                 }).then(function (response) {
                     if (response.data.status === "ok") {
-                        //console.log(response);
                         $scope.listFilesAndJobs(spider);
                     }
                     else {
-                        //alert("Error while scheduling job : " + JSON.stringify(dados) );
                         alert("Error while scheduling job : " + response.data.message);
                     }
                 });
@@ -174,7 +179,7 @@
 
             $scope.clearAll = function () {
                 // var dir = '/home/osboxes/Documents/scrapyd/items';
-                var dir = serverScrapydLocalDir + '/jobs';
+                var dir = serverScrapydJobsDir;
 
                     $http.get(client + 'delDir.php?dir='+dir)
                     .success(function (dados) {

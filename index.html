@@ -80,15 +80,15 @@
                         <tbody>
                             <tr ng-repeat="file in files">
                                 <td>{{$index+1}}</td>
-                                <td>{{file | limitTo:file.length-3}}</td>
+                                <td>{{file | limitTo:file.length-4}}</td>
                                 <td>{{fileResume.ultimoEstado[$index]}}</td>
                                 <td>{{fileResume.itemsRaspados[$index]}}</td>
                                 <td>
                                     <button type="button" class="btn btn-primary btn-xs" ng-click="showFileResume($index, file | limitTo:file.length-3)">
                                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                                     </button>
-                                    <a ng-href="{{serverScrapyd}}items/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.jl"> items </a>
-                                    <a ng-href="{{serverScrapyd}}logs/{{_project}}/{{_spider}}/{{file | limitTo:file.length-3}}.log"> log </a>
+                                    <a ng-href="{{serverScrapyd}}items/{{_project}}/{{_spider}}/{{file}}"> Items </a>
+                                    <a ng-href="{{serverScrapyd}}logs/{{_project}}/{{_spider}}/{{file | limitTo:file.length-4}}.log"> Log </a>
                                 </td>
                             </tr>
                             <tr>

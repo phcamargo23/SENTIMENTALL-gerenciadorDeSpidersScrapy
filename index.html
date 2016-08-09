@@ -1,130 +1,130 @@
 <!DOCTYPE html>
 <html lang="pt-br" ng-app="estagio">
 
-  <head>
+<head>
     <meta charset="utf-8" />
     <title>Gerenciador de cidades</title>
-	<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="node_modules/angular-loading-bar/build/loading-bar.min.css" />
-	<script src="node_modules/angular/angular.min.js"></script>
-	<script src="node_modules/angular-route/angular-route.min.js"></script>
-	<script src="node_modules/angular-animate/angular-animate.min.js"></script>
-	<script src="node_modules/angular-loading-bar/build/loading-bar.min.js"></script>
-	<script src="node_modules/jquery/dist/jquery.min.js"></script>
-	<script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="node_modules/angular-loading-bar/build/loading-bar.min.css" />
+    <script src="node_modules/angular/angular.min.js"></script>
+    <script src="node_modules/angular-route/angular-route.min.js"></script>
+    <script src="node_modules/angular-animate/angular-animate.min.js"></script>
+    <script src="node_modules/angular-loading-bar/build/loading-bar.min.js"></script>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="app.js"></script>
-  </head>
+</head>
 
-  <body ng-controller="MainController">
-        <div class="container">
-            <button class="btn btn-default" type="button" ng-click="salvar(projects.projects[0])">{{projects}}</button>
-            <button class="btn btn-default" type="button" ng-click="clearAll()">limpar memória</button>
-            <div class="row">
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nome</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="project in projects">
-                                <td>{{$index}}</td>
-                                <td>{{project}}</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary btn-xs" ng-click="listSpiders(project)">
-                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nome</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="spider in spiders">
-                                <td>{{$index}}</td>
-                                <td>{{spider}}</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary btn-xs" ng-click="listFilesAndJobs(spider)">
-                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-xs" ng-click="schedule(spider)">
-                                        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-xs" ng-click="scheduleWithState(spider)">
-                                        <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+<body ng-controller="MainController">
+<div class="container">
+    <button class="btn btn-default" type="button" ng-click="salvar(projects.projects[0])">{{projects}}</button>
+    <button class="btn btn-default" type="button" ng-click="clearAll()">limpar memória</button>
+    <div class="row">
+        <table class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Ação</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="project in projects">
+                <td>{{$index}}</td>
+                <td>{{project}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="listSpiders(project)">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Ação</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="spider in spiders">
+                <td>{{$index}}</td>
+                <td>{{spider}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="listFilesAndJobs(spider)">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="schedule(spider)">
+                        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="scheduleWithState(spider)">
+                        <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Job id</th>
-                                <th>Último estado</th>
-                                <th>Items raspados</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="file in files">
-                                <td>{{$index+1}}</td>
-                                <td>{{file | limitTo:file.length-4}}</td>
-                                <td>{{fileResume.ultimoEstado[$index]}}</td>
-                                <td>{{fileResume.itemsRaspados[$index]}}</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary btn-xs" ng-click="showFileResume($index, file | limitTo:file.length-3)">
-                                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                                    </button>
-                                    <a ng-href="{{serverScrapyd}}items/{{_project}}/{{_spider}}/{{file}}"> Items </a>
-                                    <a ng-href="{{serverScrapyd}}logs/{{_project}}/{{_spider}}/{{file | limitTo:file.length-4}}.log"> Log </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Totais</td>
-                                <td>{{files.length}} job(s)</td>
-                                <td>-</td>
-                                <td>{{fileResume.totais['itemsRaspados']}}</td>
-                                <td>-</td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <table class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Job id</th>
+                <th>Último estado</th>
+                <th>Items raspados</th>
+                <th>Ação</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="file in files">
+                <td>{{$index+1}}</td>
+                <td>{{file | limitTo:file.length-4}}</td>
+                <td>{{fileResume.ultimoEstado[$index]}}</td>
+                <td>{{fileResume.itemsRaspados[$index]}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="showFileResume($index, file | limitTo:file.length-3)">
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                    </button>
+                    <a ng-href="{{serverScrapyd}}items/{{_project}}/{{_spider}}/{{file}}"> Items </a>
+                    <a ng-href="{{serverScrapyd}}logs/{{_project}}/{{_spider}}/{{file | limitTo:file.length-4}}.log"> Log </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Totais</td>
+                <td>{{files.length}} job(s)</td>
+                <td>-</td>
+                <td>{{fileResume.totais['itemsRaspados']}}</td>
+                <td>-</td>
+            </tr>
+            </tbody>
+        </table>
 
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nome</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="job in jobsRunning">
-                                <td>{{$index}}</td>
-                                <td>{{job}}</td>
-                                <td>
-                                    <a ng-href="{{serverScrapyd}}items/{{_project}}/{{_spider}}/{{job.id}}.jl"> items </a>
-                                    <a ng-href="{{serverScrapyd}}logs/{{_project}}/{{_spider}}/{{job.id}}.log"> log </a>
-                                    <button type="button" class="btn btn-cancel btn-xs" ng-click="cancel(_project, job.id)">
-                                        <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-            </div>
-        </div>
-  </body>
+        <table class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Ação</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="job in jobsRunning">
+                <td>{{$index}}</td>
+                <td>{{job}}</td>
+                <td>
+                    <a ng-href="{{serverScrapyd}}items/{{_project}}/{{_spider}}/{{job.id}}.jl"> items </a>
+                    <a ng-href="{{serverScrapyd}}logs/{{_project}}/{{_spider}}/{{job.id}}.log"> log </a>
+                    <button type="button" class="btn btn-cancel btn-xs" ng-click="cancel(_project, job.id)">
+                        <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
 
 </html>

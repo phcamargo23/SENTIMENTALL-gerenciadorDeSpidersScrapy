@@ -104,11 +104,23 @@
 
                             $http.get(client + 'getFile.php?file=' + $scope.serverScrapyd + log)
                                 .success(function (dados) {
+
                                     (function(){
                                         var re = /Scraped from/igm;
                                         var str = dados;
+                                        count = str.match(re).length;
+                                        console.log(count);
+                                    })();
+
+                                    (function(){
+                                        var re = /Closing spider/igm;
+                                        var str = dados;
                                         var match = re.exec(str);
-                                        console.log(match);
+
+                                        if(match != null && angular.isDefined(timer)){
+                                            $interval.cancel(timer);
+                                            // alert(count);
+                                        }
                                     })();
                                 });
                         }, 500);

@@ -7,21 +7,19 @@
             var client = 'http://localhost/estagio/';
 
 
-
-
             // http://tutorials.jenkov.com/angularjs/timeout-interval.html
 
-            $scope.fileResume = {ultimoEstado:[], itemsRaspados:[], totais:[]};
+            $scope.fileResume = {ultimoEstado: [], itemsRaspados: [], totais: []};
 
             listProjects();
 
             function listProjects() {
-                $http.get($scope.serverScrapyd+'listprojects.json').success(function (dados) {
+                $http.get($scope.serverScrapyd + 'listprojects.json').success(function (dados) {
                     $scope.projects = dados.projects;
                 });
             }
 
-            function autoConsultJob(project, spider, jobLog){
+            function autoConsultJob(project, spider, jobLog) {
                 var log = client + 'getFile.php?file=' + $scope.serverScrapyd + jobLog;
                 $http.get(log)
                     .success(function (dados) {
@@ -29,7 +27,6 @@
                         // $scope.teste = dados;
                     });
             }
-
 
 
             $scope.listSpidersAndJobs = function (project) {
@@ -47,7 +44,7 @@
 
             $scope.listSpiders = function (project) {
                 $http({
-                    url: $scope.serverScrapyd+'listspiders.json',
+                    url: $scope.serverScrapyd + 'listspiders.json',
                     method: "GET",
                     params: {project: project}
                 }).success(function (dados) {
@@ -60,7 +57,7 @@
             $scope.listJobs = function (project) {
 
                 $http({
-                    url: $scope.serverScrapyd+'listjobs.json',
+                    url: $scope.serverScrapyd + 'listjobs.json',
                     method: "GET",
                     params: {project: project}
                 }).success(function (dados) {
@@ -74,19 +71,19 @@
 
             $scope.schedule = function (spider) {
                 var date = $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss');
-                var item = 'items/' +$scope._project +"/"+ spider + '/' + date + '.csv';
-                var log = 'logs/' +$scope._project +"/"+ spider + '/' + date + '.log';
+                var item = 'items/' + $scope._project + "/" + spider + '/' + date + '.csv';
+                var log = 'logs/' + $scope._project + "/" + spider + '/' + date + '.log';
                 var parameters = {};
                 parameters.project = $scope._project
                 parameters.spider = spider;
                 parameters.setting = [
                     'FEED_FORMAT=csv',
-                    'FEED_URI='+ serverScrapydJobsDir + item,
-                    'LOG_FILE='+ serverScrapydJobsDir + log
+                    'FEED_URI=' + serverScrapydJobsDir + item,
+                    'LOG_FILE=' + serverScrapydJobsDir + log
                 ];
 
                 $http({
-                    url: $scope.serverScrapyd+'schedule.json',
+                    url: $scope.serverScrapyd + 'schedule.json',
                     method: "POST",
                     params: parameters
                 }).then(function (response) {
@@ -99,25 +96,25 @@
 
                         // var timer = $interval(autoConsultJob($scope._project, spider, log), 500);
 
-                        var count=0;
-                        var timer = $interval(function(){
+                        var count = 0;
+                        var timer = $interval(function () {
 
                             $http.get(client + 'getFile.php?file=' + $scope.serverScrapyd + log)
                                 .success(function (dados) {
 
-                                    (function(){
+                                    (function () {
                                         var re = /Scraped from/igm;
                                         var str = dados;
                                         count = str.match(re).length;
                                         console.log(count);
                                     })();
 
-                                    (function(){
+                                    (function () {
                                         var re = /Closing spider/igm;
                                         var str = dados;
                                         var match = re.exec(str);
 
-                                        if(match != null && angular.isDefined(timer)){
+                                        if (match != null && angular.isDefined(timer)) {
                                             $interval.cancel(timer);
                                             // alert(count);
                                         }
@@ -140,13 +137,13 @@
                 parameters.spider = spider;
                 parameters.setting = [
                     'FEED_FORMAT=csv',
-                    'FEED_URI='+serverScrapydJobsDir + 'items/' +$scope._project +"/"+ spider + '/' + date + '.csv',
-                    'LOG_FILE='+serverScrapydJobsDir + 'logs/' +$scope._project +"/"+ spider + '/' + date + '.log',
-                    'JOBDIR='+serverScrapydJobsDir + 'state/' + $scope._project +"/"+ spider
+                    'FEED_URI=' + serverScrapydJobsDir + 'items/' + $scope._project + "/" + spider + '/' + date + '.csv',
+                    'LOG_FILE=' + serverScrapydJobsDir + 'logs/' + $scope._project + "/" + spider + '/' + date + '.log',
+                    'JOBDIR=' + serverScrapydJobsDir + 'state/' + $scope._project + "/" + spider
                 ];
 
                 $http({
-                    url: $scope.serverScrapyd+'schedule.json',
+                    url: $scope.serverScrapyd + 'schedule.json',
                     method: "POST",
                     params: parameters
                 }).then(function (response) {
@@ -161,9 +158,9 @@
 
             $scope.cancel = function (project, job) {
                 $http({
-                    url: $scope.serverScrapyd+'cancel.json',
+                    url: $scope.serverScrapyd + 'cancel.json',
                     method: "POST",
-                    params: { project: project, job: job }
+                    params: {project: project, job: job}
                 }).then(function (response) {
                     if (response.status == "200") {
                         alert("Job cancelado com sucesso!");
@@ -204,47 +201,47 @@
                         $scope.files = result;
                     }
                     else {
-                        alert("Error while scheduling job : " + response.data.message );
+                        alert("Error while scheduling job : " + response.data.message);
                         //console.log(response);
                     }
                 });
             }
 
             $scope.showFileResume = function (index, file) {
-                $http.get(client + 'getFile.php?file='+$scope.serverScrapyd + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + "log")
+                $http.get(client + 'getFile.php?file=' + $scope.serverScrapyd + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + "log")
                     .success(function (dados) {
                         // console.log(dados);
-                        (function(){
+                        (function () {
                             var re = /'(finish_reason)': '(.*)',/;
                             var str = dados;
                             var match = re.exec(str);
                             $scope.fileResume.ultimoEstado[index] = match[2];
                         })();
 
-                        (function(){
+                        (function () {
                             var re = /'(item_scraped_count)': (\d*),/;
                             var str = dados;
                             var match = re.exec(str);
-                            $scope.fileResume.itemsRaspados[index] = (match[2] == null)?0:match[2];
+                            $scope.fileResume.itemsRaspados[index] = (match[2] == null) ? 0 : match[2];
                             // if ($scope.fileResume.totais['itemsRaspados'] == undefined) $scope.fileResume.totais['itemsRaspados'] = 0;
                             // $scope.fileResume.totais['itemsRaspados'] += parseInt($scope.fileResume.itemsRaspados[index]);
                         })();
                         // console.log($scope.fileResume);
-                });
-/*
-                //CORS
-                $http.get($scope.serverScrapyd + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + "log")
-                    .success(function (dados) {
-                        console.log(dados.projects);
-                });
-*/
+                    });
+                /*
+                 //CORS
+                 $http.get($scope.serverScrapyd + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + "log")
+                 .success(function (dados) {
+                 console.log(dados.projects);
+                 });
+                 */
 
             }
 
             $scope.clearState = function (project, spider) {
                 var dir = serverScrapydJobsDir + '/state';
 
-                $http.get(client + 'delDir.php?dir='+dir)
+                $http.get(client + 'delDir.php?dir=' + dir)
                     .success(function (dados) {
                         alert(dados);
                     });
@@ -254,12 +251,39 @@
                 // var dir = '/home/osboxes/Documents/scrapyd/items';
                 var dir = serverScrapydJobsDir;
 
-                $http.get(client + 'delDir.php?dir='+dir)
-                .success(function (dados) {
-                    alert(dados);
-                });
+                $http.get(client + 'delDir.php?dir=' + dir)
+                    .success(function (dados) {
+                        alert(dados);
+                    });
             }
 
-        });
+            $scope.get_file = function (file) {
+                console.log(file);
+                $('#spider_file').html(file);
+                launchSpinner("centerSpin", null, null);
+                $.ajax({
+                    type: "POST",
+                    dataType: 'text',
+                    url: client + 'getFile.php',
+                    data: {
+                        'file': file
+                    },
+                    crossDomain: true,
+                })
+                    .done(function (data) {
+                        $('#spider_content').css('display', 'block');
+                        $('#spider_content').html('<pre class="brush: bash">' + data + '</pre>');
+                        SyntaxHighlighter.highlight();
+                        stopSpinner("centerSpin", null);
+                    })
+                    .fail(function (xhr, textStatus, errorThrown) {
+                        $('#spider_content').css('display', 'block');
+                        $('#spider_content').html('<pre class="brush: bash">' + xhr.responseText + "<br>" + textStatus + '</pre>');
+                        SyntaxHighlighter.highlight();
+                        stopSpinner("centerSpin", null);
+                    });
+            }
 
+
+        });
 })();

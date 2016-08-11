@@ -1,7 +1,7 @@
 (function () {
 
     angular.module('estagio', [])
-        .controller('MainController', function ($scope, $http, $filter, $interval) {
+        .controller('MainController', function ($scope, $http, $filter, $interval, $timeout) {
             $scope.serverScrapyd = 'http://localhost:6800/';
             var serverScrapydJobsDir = '/scrapyd/jobs/';
             var client = 'http://localhost/estagio/';
@@ -88,41 +88,10 @@
                     params: parameters
                 }).then(function (response) {
                     if (response.data.status === "ok") {
-                        // $scope.listFilesAndJobs(spider);
-                        // autoConsultJob($scope._project, spider, log);
-                        // console.log(log);
-                        // autoConsultJob(log);
-
-
-                        // var timer = $interval(autoConsultJob($scope._project, spider, log), 500);
-
-                        var count = 0;
-                        var timer = $interval(function () {
-
-                            $http.get(client + 'getFile.php?file=' + $scope.serverScrapyd + log)
-                                .success(function (dados) {
-
-                                    (function () {
-                                        var re = /Scraped from/igm;
-                                        var str = dados;
-                                        count = str.match(re).length;
-                                        console.log(count);
-                                    })();
-
-                                    (function () {
-                                        var re = /Closing spider/igm;
-                                        var str = dados;
-                                        var match = re.exec(str);
-
-                                        if (match != null && angular.isDefined(timer)) {
-                                            $interval.cancel(timer);
-                                            // alert(count);
-                                        }
-                                    })();
-                                });
-                        }, 500);
-
-
+                        $timeout(function () {
+                            $scope.listFiles(spider);
+                            showJobStatsInRealTime(log);
+                        }, 3000);
                     }
                     else {
                         alert("Error while scheduling job : " + response.data.message);
@@ -207,37 +176,6 @@
                 });
             }
 
-            $scope.showFileResume = function (index, file) {
-                $http.get(client + 'getFile.php?file=' + $scope.serverScrapyd + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + "log")
-                    .success(function (dados) {
-                        // console.log(dados);
-                        (function () {
-                            var re = /'(finish_reason)': '(.*)',/;
-                            var str = dados;
-                            var match = re.exec(str);
-                            $scope.fileResume.ultimoEstado[index] = match[2];
-                        })();
-
-                        (function () {
-                            var re = /'(item_scraped_count)': (\d*),/;
-                            var str = dados;
-                            var match = re.exec(str);
-                            $scope.fileResume.itemsRaspados[index] = (match[2] == null) ? 0 : match[2];
-                            // if ($scope.fileResume.totais['itemsRaspados'] == undefined) $scope.fileResume.totais['itemsRaspados'] = 0;
-                            // $scope.fileResume.totais['itemsRaspados'] += parseInt($scope.fileResume.itemsRaspados[index]);
-                        })();
-                        // console.log($scope.fileResume);
-                    });
-                /*
-                 //CORS
-                 $http.get($scope.serverScrapyd + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + "log")
-                 .success(function (dados) {
-                 console.log(dados.projects);
-                 });
-                 */
-
-            }
-
             $scope.clearState = function (project, spider) {
                 var dir = serverScrapydJobsDir + '/state';
 
@@ -284,6 +222,66 @@
                     });
             }
 
+            $scope.showFileResume = function (index, file) {
+                $http.get(client + 'getFile.php?file=' + $scope.serverScrapyd + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + "log")
+                    .success(function (dados) {
+                        // console.log(dados);
+                        (function () {
+                            var re = /'(finish_reason)': '(.*)',/;
+                            var str = dados;
+                            var match = re.exec(str);
+                            $scope.fileResume.ultimoEstado[index] = match[2];
+                        })();
+
+                        (function () {
+                            var re = /'(item_scraped_count)': (\d*),/;
+                            var str = dados;
+                            var match = re.exec(str);
+                            $scope.fileResume.itemsRaspados[index] = (match[2] == null) ? 0 : match[2];
+                            // if ($scope.fileResume.totais['itemsRaspados'] == undefined) $scope.fileResume.totais['itemsRaspados'] = 0;
+                            // $scope.fileResume.totais['itemsRaspados'] += parseInt($scope.fileResume.itemsRaspados[index]);
+                        })();
+                        // console.log($scope.fileResume);
+                    });
+                /*
+                 //CORS
+                 $http.get($scope.serverScrapyd + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + "log")
+                 .success(function (dados) {
+                 console.log(dados.projects);
+                 });
+                 */
+
+            }
+
+
+            function showJobStatsInRealTime(file){
+                var count = 0;
+                var timer = $interval(function () {
+
+                    $http.get(client + 'getFile.php?file=' + $scope.serverScrapyd + file)
+                        .success(function (dados) {
+
+                            (function () {
+                                var re = /Scraped from/igm;
+                                var str = dados;
+                                var match = str.match(re);
+
+                                if(match != null) count = str.match(re).length;
+                                $scope.fileResume.itemsRaspados[$scope.files.length-1] = count;
+                            })();
+
+                            (function () {
+                                var re = /Closing spider/igm;
+                                var str = dados;
+                                var match = re.exec(str);
+
+                                if (match != null && angular.isDefined(timer)) {
+                                    $interval.cancel(timer);
+                                }
+                            })();
+                        });
+                }, 500);
+            }
 
         });
 })();

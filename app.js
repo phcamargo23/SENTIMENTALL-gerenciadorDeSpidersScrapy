@@ -147,6 +147,16 @@
             };
 
             $scope.listFiles = function (spider) {
+                // var dir = '/home/osboxes/Documents/scrapyd/items';
+                var dir = serverScrapydJobsDir;
+
+                $http.get(client + 'listFiles.php?dir=' + dir + 'items/' + $scope._project + '/' + spider)
+                    .success(function (dados) {
+                        $scope.files = dados;
+                    });
+            }
+
+            $scope.listFiles2 = function (spider) {
                 var file = $scope.serverScrapyd + "items/" + $scope._project + "/" + spider;
 
                 $http({
@@ -166,7 +176,6 @@
                         while ((match = re.exec(str)) !== null) {
                             result.push(match[2]);
                         }
-
                         $scope.files = result;
                     }
                     else {
@@ -223,9 +232,11 @@
             }
 
             $scope.showFileResume = function (index, file) {
-                $http.get(client + 'getFile.php?file=' + $scope.serverScrapyd + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + "log")
+                var url = client + 'getFile.php?file=' + $scope.serverScrapyd + "logs/" + $scope._project + "/" + $scope._spider + "/" + file + "log";
+
+                $http.get(url)
                     .success(function (dados) {
-                        // console.log(dados);
+                        // alert(dados);
                         (function () {
                             var re = /'(finish_reason)': '(.*)',/;
                             var str = dados;
@@ -256,8 +267,9 @@
 
             function showJobStatsInRealTime(file){
                 var count = 0;
-                var timer = $interval(function () {
+                $scope.fileResume.ultimoEstado[$scope.files.length] = '[running]';
 
+                var timer = $interval(function () {
                     $http.get(client + 'getFile.php?file=' + $scope.serverScrapyd + file)
                         .success(function (dados) {
 
@@ -266,8 +278,10 @@
                                 var str = dados;
                                 var match = str.match(re);
 
-                                if(match != null) count = str.match(re).length;
-                                $scope.fileResume.itemsRaspados[$scope.files.length-1] = count;
+                                if(match != null){
+                                    count = str.match(re).length;
+                                    $scope.fileResume.itemsRaspados[$scope.files.length-1] = count;
+                                }
                             })();
 
                             (function () {
@@ -277,6 +291,8 @@
 
                                 if (match != null && angular.isDefined(timer)) {
                                     $interval.cancel(timer);
+                                    // $scope.showFileResume($scope.files.length-1, file);
+                                    $scope.fileResume.ultimoEstado[$scope.files.length-1] = 'finished';
                                 }
                             })();
                         });

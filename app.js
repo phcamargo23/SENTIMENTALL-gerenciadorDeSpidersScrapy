@@ -101,13 +101,15 @@
 
             $scope.scheduleWithState = function (spider) {
                 var date = $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss');
+                var item = 'items/' + $scope._project + "/" + spider + '/' + date + '.csv';
+                var log = 'logs/' + $scope._project + "/" + spider + '/' + date + '.log';
                 var parameters = {};
                 parameters.project = $scope._project
                 parameters.spider = spider;
                 parameters.setting = [
                     'FEED_FORMAT=csv',
-                    'FEED_URI=' + serverScrapydJobsDir + 'items/' + $scope._project + "/" + spider + '/' + date + '.csv',
-                    'LOG_FILE=' + serverScrapydJobsDir + 'logs/' + $scope._project + "/" + spider + '/' + date + '.log',
+                    'FEED_URI=' + serverScrapydJobsDir + item,
+                    'LOG_FILE=' + serverScrapydJobsDir + log,
                     'JOBDIR=' + serverScrapydJobsDir + 'state/' + $scope._project + "/" + spider
                 ];
 
@@ -117,7 +119,10 @@
                     params: parameters
                 }).then(function (response) {
                     if (response.data.status === "ok") {
-                        $scope.listFilesAndJobs(spider);
+                        $timeout(function () {
+                            $scope.listFilesAndJobs(spider);
+                            showJobStatsInRealTime(log);
+                        }, 3000);
                     }
                     else {
                         alert("Error while scheduling job : " + response.data.message);

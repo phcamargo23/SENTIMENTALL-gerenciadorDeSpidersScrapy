@@ -2,16 +2,16 @@
 <html lang="pt-br" ng-app="estagio">
 
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <title>Gerenciador de cidades</title>
     <!-- BOOTSTRAP -->
-    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <!-- SYNTAX HIGHLIGHTER -->
     <link href="http://agorbatchev.typepad.com/pub/sh/3_0_83/styles/shCore.css" rel="stylesheet">
     <link href="http://agorbatchev.typepad.com/pub/sh/3_0_83/styles/shThemeDefault.css" rel="stylesheet">
     <link href="http://agorbatchev.typepad.com/pub/sh/3_0_83/styles/shThemeRDark.css" rel="stylesheet">
     <!--  -->
-    <link rel="stylesheet" href="node_modules/angular-loading-bar/build/loading-bar.min.css" />
+    <link rel="stylesheet" href="node_modules/angular-loading-bar/build/loading-bar.min.css"/>
     <script src="node_modules/angular/angular.min.js"></script>
     <script src="node_modules/angular-route/angular-route.min.js"></script>
     <script src="node_modules/angular-animate/angular-animate.min.js"></script>
@@ -89,20 +89,22 @@
                 <td>{{fileResume.ultimoEstado[$index]}}</td>
                 <td>{{fileResume.itemsRaspados[$index]}}</td>
                 <td>
-                    <button type="button" class="btn btn-primary btn-xs" ng-click="showFileResume($index, file | limitTo:file.length-3)">
+                    <button type="button" class="btn btn-primary btn-xs"
+                            ng-click="showFileResume($index, file | limitTo:file.length-3)">
                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                     </button>
                     <a ng-href="{{serverScrapyd}}items/{{_project}}/{{_spider}}/{{file}}"> Items </a>
-                    <a ng-href="{{serverScrapyd}}logs/{{_project}}/{{_spider}}/{{file | limitTo:file.length-4}}.log"> Log </a>
+                    <a ng-href="{{serverScrapyd}}logs/{{_project}}/{{_spider}}/{{file | limitTo:file.length-4}}.log">
+                        Log </a>
                 </td>
             </tr>
-            <tr>
-                <td>Totais</td>
-                <td>{{files.length}} job(s)</td>
-                <td>-</td>
-                <td>{{fileResume.totais['itemsRaspados']}}</td>
-                <td>-</td>
-            </tr>
+            <!--<tr>-->
+            <!--<td>Totais</td>-->
+            <!--<td>{{files.length}} job(s)</td>-->
+            <!--<td>-</td>-->
+            <!--<td>{{fileResume.totais['itemsRaspados']}}</td>-->
+            <!--<td>-</td>-->
+            <!--</tr>-->
             </tbody>
         </table>
 
@@ -118,28 +120,29 @@
             </thead>
             <tbody>
             <tr ng-repeat="job in jobs">
-            <td>{{$index+1}}</td>
-            <td>{{job.job}}</td>
-            <td>{{job.resume}}</td>
-            <td>
-                <!--<button type="checkbox" class="btn btn-primary btn-xs" ng-click="monitorJob(serverScrapyd + 'logs/' + job.project + '/' + job.spider +'/'+ job.job + 'log')">-->
-                <button type="checkbox" class="btn btn-primary btn-xs" ng-click="monitorJob(job)">
-                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                </button>
-                <a ng-href="{{serverScrapyd}}items/{{job.project}}/{{job.spider}}/{{job.job}}.csv"> items </a>
-                <a ng-href="{{serverScrapyd}}logs/{{job.project}}/{{job.spider}}/{{job.job}}.log"> log </a>
-                <button type="button" class="btn btn-cancel btn-xs" ng-click="cancel(job.project, job.id)">
-                    <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
-                </button>
-            </td>
+                <td>{{$index+1}}</td>
+                <td>{{job.job}}</td>
+                <td>{{job.state}}</td>
+                <td>{{job.resume}}</td>
+                <td>
+                    <!--<button type="checkbox" class="btn btn-primary btn-xs" ng-click="monitorJob(serverScrapyd + 'logs/' + job.project + '/' + job.spider +'/'+ job.job + 'log')">-->
+                    <button type="checkbox" class="btn btn-primary btn-xs" ng-click="monitorJob(job)">
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                    </button>
+                    <a ng-href="{{serverScrapyd}}items/{{job.project}}/{{job.spider}}/{{job.job}}.csv"> items </a>
+                    <a ng-href="{{serverScrapyd}}logs/{{job.project}}/{{job.spider}}/{{job.job}}.log"> log </a>
+                    <button type="button" class="btn btn-cancel btn-xs" ng-click="cancel(job.project, job.id)">
+                        <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
+                    </button>
+                </td>
             </tr>
-            <tr>
-                <td>Totais</td>
-                <td>{{files.length}} job(s)</td>
-                <td>-</td>
-                <td>{{fileResume.totais['itemsRaspados']}}</td>
-                <td>-</td>
-            </tr>
+            <!--<tr>-->
+            <!--<td>Totais</td>-->
+            <!--<td>{{files.length}} job(s)</td>-->
+            <!--<td>-</td>-->
+            <!--<td>{{fileResume.totais['itemsRaspados']}}</td>-->
+            <!--<td>-</td>-->
+            <!--</tr>-->
             </tbody>
         </table>
     </div>
@@ -149,7 +152,9 @@
 <div class="row" id="spider_content">
     <pre class="brush: bash"></pre>
 </div>
-<button type="button" class="btn btn-warning" ng-click="get_file('http://localhost:6800/logs/tutorial/lab/86c9cd705e6c11e6a2f7902b34f05b7e.log');"> <i class="fa fa-fast-forward"></i> </button>
+<button type="button" class="btn btn-warning"
+        ng-click="get_file('http://localhost:6800/logs/tutorial/lab/86c9cd705e6c11e6a2f7902b34f05b7e.log');"><i
+        class="fa fa-fast-forward"></i></button>
 </body>
 
 

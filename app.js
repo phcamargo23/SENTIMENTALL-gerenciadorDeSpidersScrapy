@@ -88,11 +88,9 @@
                 }).then(function (response) {
                     if (response.data.status === "ok") {
                         $timeout(function () {
-                            // showJobStatsInRealTime(log);
-                            var job = {id:response.data.jobid, job:date, project:$scope._project, spider:spider, resume:'[executando]'};
+                            var job = {id:response.data.jobid, job:date, project:$scope._project, spider:spider, state:'[executando]', resume:''};
                             $scope.jobs.push(job);
                             $scope.monitorJob(job);
-                            // $scope.listFiles(spider);
                         }, 3000);
                     }
                     else {
@@ -105,6 +103,7 @@
                 var date = $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss');
                 var item = 'items/' + $scope._project + "/" + spider + '/' + date + '.csv';
                 var log = 'logs/' + $scope._project + "/" + spider + '/' + date + '.log';
+                var state = 'state/' + $scope._project + "/" + spider + '/' + date;
                 var parameters = {};
                 parameters.project = $scope._project
                 parameters.spider = spider;
@@ -112,7 +111,7 @@
                     'FEED_FORMAT=csv',
                     'FEED_URI=' + serverScrapydJobsDir + item,
                     'LOG_FILE=' + serverScrapydJobsDir + log,
-                    'JOBDIR=' + serverScrapydJobsDir + 'state/' + $scope._project + "/" + spider
+                    'JOBDIR=' + serverScrapydJobsDir + state
                 ];
 
                 $http({
@@ -122,7 +121,7 @@
                 }).then(function (response) {
                     if (response.data.status === "ok") {
                         $timeout(function () {
-                            var job = {id:response.data.jobid, job:date, project:$scope._project, spider:spider, resume:'[executando]'};
+                            var job = {id:response.data.jobid, job:date, project:$scope._project, spider:spider, state:'[executando]', resume:''};
                             $scope.jobs.push(job);
                             $scope.monitorJob(job);
                         }, 3000);
@@ -306,6 +305,7 @@
                                     $interval.cancel(timer);
                                     // $scope.showFileResume($scope.files.length-1, file);
                                     // $scope.fileResume.ultimoEstado[$scope.files.length-1] = 'finished';
+                                    job.state = 'finished';
                                     $scope.listFiles(job.spider);
                                 }
                             })();

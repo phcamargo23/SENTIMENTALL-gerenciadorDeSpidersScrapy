@@ -9,7 +9,8 @@
 
             // http://tutorials.jenkov.com/angularjs/timeout-interval.html
 
-            $scope.fileResume = {ultimoEstado: [], itemsRaspados: [], totais: []};
+            $scope.fileResume = {ultimoEstado: [], itemsRaspados: []};
+            $scope.jobs = [];
 
             listProjects();
 
@@ -55,7 +56,6 @@
             };
 
             $scope.listJobs = function (project) {
-
                 $http({
                     url: $scope.serverScrapyd + 'listjobs.json',
                     method: "GET",
@@ -66,7 +66,6 @@
                     $scope.jobsRunning = dados.running;
                     // $scope.jobsFinished = dados.finished;
                 });
-
             };
 
             $scope.schedule = function (spider) {
@@ -89,8 +88,11 @@
                 }).then(function (response) {
                     if (response.data.status === "ok") {
                         $timeout(function () {
-                            $scope.listFiles(spider);
-                            showJobStatsInRealTime(log);
+                            // showJobStatsInRealTime(log);
+                            var job = {id:response.data.jobid, job:date, project:$scope._project, spider:spider, resume:'[executando]'};
+                            $scope.jobs.push(job);
+                            $scope.monitorJob(job);
+                            // $scope.listFiles(spider);
                         }, 3000);
                     }
                     else {
@@ -120,8 +122,9 @@
                 }).then(function (response) {
                     if (response.data.status === "ok") {
                         $timeout(function () {
-                            $scope.listFilesAndJobs(spider);
-                            showJobStatsInRealTime(log);
+                            var job = {id:response.data.jobid, job:date, project:$scope._project, spider:spider, resume:'[executando]'};
+                            $scope.jobs.push(job);
+                            $scope.monitorJob(job);
                         }, 3000);
                     }
                     else {
@@ -153,6 +156,7 @@
 
             $scope.listFiles = function (spider) {
                 // var dir = '/home/osboxes/Documents/scrapyd/items';
+                $scope.fileResume = {ultimoEstado: [], itemsRaspados: []};
                 var dir = serverScrapydJobsDir;
 
                 $http.get(client + 'listFiles.php?dir=' + dir + 'items/' + $scope._project + '/' + spider)
@@ -253,9 +257,9 @@
                             var re = /'(item_scraped_count)': (\d*),/;
                             var str = dados;
                             var match = re.exec(str);
-                            $scope.fileResume.itemsRaspados[index] = (match[2] == null) ? 0 : match[2];
                             // if ($scope.fileResume.totais['itemsRaspados'] == undefined) $scope.fileResume.totais['itemsRaspados'] = 0;
                             // $scope.fileResume.totais['itemsRaspados'] += parseInt($scope.fileResume.itemsRaspados[index]);
+                            $scope.fileResume.itemsRaspados[index] = (match[2] == null) ? 0 : match[2];
                         })();
                         // console.log($scope.fileResume);
                     });
@@ -270,12 +274,14 @@
             }
 
 
-            function showJobStatsInRealTime(file){
+            // function showJobStatsInRealTime(file){
+            $scope.monitorJob = function(job){
+                // console.log(job);
                 var count = 0;
-                $scope.fileResume.ultimoEstado[$scope.files.length] = '[running]';
+                // $scope.fileResume.ultimoEstado[$scope.files.length] = '[running]';
 
                 var timer = $interval(function () {
-                    $http.get(client + 'getFile.php?file=' + $scope.serverScrapyd + file)
+                    $http.get(client + 'getFile.php?file=' + $scope.serverScrapyd + 'logs/' + job.project + '/' + job.spider +'/'+ job.job + '.log')
                         .success(function (dados) {
 
                             (function () {
@@ -285,7 +291,9 @@
 
                                 if(match != null){
                                     count = str.match(re).length;
-                                    $scope.fileResume.itemsRaspados[$scope.files.length-1] = count;
+                                    // $scope.fileResume.itemsRaspados[$scope.files.length-1] = count;
+                                    job.resume = count;
+                                    // console.log(count);
                                 }
                             })();
 
@@ -297,7 +305,8 @@
                                 if (match != null && angular.isDefined(timer)) {
                                     $interval.cancel(timer);
                                     // $scope.showFileResume($scope.files.length-1, file);
-                                    $scope.fileResume.ultimoEstado[$scope.files.length-1] = 'finished';
+                                    // $scope.fileResume.ultimoEstado[$scope.files.length-1] = 'finished';
+                                    $scope.listFiles(job.spider);
                                 }
                             })();
                         });

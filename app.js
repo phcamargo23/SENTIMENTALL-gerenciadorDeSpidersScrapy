@@ -99,11 +99,11 @@
                 });
             };
 
-            $scope.scheduleWithState = function (spider) {
-                var date = $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss');
-                var item = 'items/' + $scope._project + "/" + spider + '/' + date + '.csv';
-                var log = 'logs/' + $scope._project + "/" + spider + '/' + date + '.log';
-                var state = 'state/' + $scope._project + "/" + spider + '/' + date;
+            $scope.scheduleWithState = function (spider, jobName) {
+                if (typeof(jobName)==='undefined') jobName = $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss');
+                var item = 'items/' + $scope._project + "/" + spider + '/' + jobName + '.csv';
+                var log = 'logs/' + $scope._project + "/" + spider + '/' + jobName + '.log';
+                var state = 'state/' + $scope._project + "/" + spider + '/' + jobName;
                 var parameters = {};
                 parameters.project = $scope._project
                 parameters.spider = spider;
@@ -121,7 +121,7 @@
                 }).then(function (response) {
                     if (response.data.status === "ok") {
                         $timeout(function () {
-                            var job = {id:response.data.jobid, job:date, project:$scope._project, spider:spider, state:'[executando]', resume:''};
+                            var job = {id:response.data.jobid, job:jobName, project:$scope._project, spider:spider, state:'[executando]', resume:''};
                             $scope.jobs.push(job);
                             $scope.monitorJob(job);
                         }, 3000);

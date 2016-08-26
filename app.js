@@ -6,9 +6,6 @@
             var serverScrapydJobsDir = '/scrapyd/jobs/';
             var client = 'http://localhost/estagio/';
 
-
-            // http://tutorials.jenkov.com/angularjs/timeout-interval.html
-
             $scope.fileResume = {ultimoEstado: [], itemsRaspados: []};
             $scope.jobs = [];
 
@@ -24,8 +21,6 @@
                 var log = client + 'getFile.php?file=' + $scope.serverScrapyd + jobLog;
                 $http.get(log)
                     .success(function (dados) {
-                        // console.log(log);
-                        // $scope.teste = dados;
                     });
             }
 
@@ -214,9 +209,9 @@
                     });
             }
 
-            $scope.get_file = function (file) {
+            $scope.showFileHighlighter = function (file) {
                 console.log(file);
-                $('#spider_file').html(file);
+                // $('#spider_file').html(file);
                 launchSpinner("centerSpin", null, null);
                 $.ajax({
                     type: "POST",
@@ -246,12 +241,17 @@
 
                 $http.get(url)
                     .success(function (dados) {
-                        // alert(dados);
+                        // (function () {
+                        //     var re = /'(finish_reason)': '(.*)',/gmi;
+                        //     var str = dados;
+                        //     var match = str.match(re);
+                        //     $scope.fileResume.ultimoEstado[index] = match[match.length-1];
+                        // })();
                         (function () {
-                            var re = /'(finish_reason)': '(.*)',/gmi;
+                            var re = /'(finish_reason)': 'finished',/gmi;
                             var str = dados;
-                            var match = str.match(re);
-                            $scope.fileResume.ultimoEstado[index] = match[match.length-1];
+                            var found = re.test(str);
+                            (found)? $scope.fileResume.ultimoEstado[index] = 'Finalizado' : $scope.fileResume.ultimoEstado[index] = 'Interrompido';
                         })();
 
                         (function () {

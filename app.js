@@ -100,7 +100,8 @@
             };
 
             $scope.scheduleWithState = function (spider, jobName) {
-                if (typeof(jobName)==='undefined') jobName = $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss');
+                var feedFormat = (jobName == undefined)? 'csv' : 'csv_headless';
+                if (jobName == undefined) jobName = $filter('date')(new Date(), 'yyyy-MM-dd_HH.mm.ss');
                 var item = 'items/' + $scope._project + "/" + spider + '/' + jobName + '.csv';
                 var log = 'logs/' + $scope._project + "/" + spider + '/' + jobName + '.log';
                 var state = 'state/' + $scope._project + "/" + spider + '/' + jobName;
@@ -108,7 +109,7 @@
                 parameters.project = $scope._project
                 parameters.spider = spider;
                 parameters.setting = [
-                    'FEED_FORMAT=csv',
+                    'FEED_FORMAT='+feedFormat,
                     'FEED_URI=' + serverScrapydJobsDir + item,
                     'LOG_FILE=' + serverScrapydJobsDir + log,
                     'JOBDIR=' + serverScrapydJobsDir + state

@@ -133,16 +133,16 @@
                 });
             };
 
-            $scope.cancel = function (project, job) {
+            $scope.cancel = function (job) {
                 $http({
                     url: $scope.serverScrapyd + 'cancel.json',
                     method: "POST",
-                    params: {project: project, job: job}
+                    params: {project: job.project, job: job.id}
                 }).then(function (response) {
                     if (response.status == "200") {
+                        $scope.jobs.splice($scope.jobs.indexOf(job), 1);
                         alert("Job cancelado com sucesso!");
                         $scope.listFilesAndJobs($scope._spider);
-
                     }
                     else {
                         //alert("Error while scheduling job : " + JSON.stringify(dados) );
@@ -161,6 +161,7 @@
 
                 $http.get(client + 'listFiles.php?dir=' + dir + 'items/' + $scope._project + '/' + spider)
                     .success(function (dados) {
+                        // console.log(dados);
                         $scope.files = dados;
                     });
             }
@@ -309,6 +310,7 @@
                                     // $scope.fileResume.ultimoEstado[$scope.files.length-1] = 'finished';
                                     job.state = 'finished';
                                     $scope.listFiles(job.spider);
+                                    $scope.jobs.splice($scope.jobs.indexOf(job), 1);
                                 }
                             })();
                         });

@@ -247,21 +247,22 @@
                     .success(function (dados) {
                         // alert(dados);
                         (function () {
-                            var re = /'(finish_reason)': '(.*)',/;
+                            var re = /'(finish_reason)': '(.*)',/gmi;
                             var str = dados;
-                            var match = re.exec(str);
-                            $scope.fileResume.ultimoEstado[index] = match[2];
+                            var match = str.match(re);
+                            $scope.fileResume.ultimoEstado[index] = match[match.length-1];
                         })();
 
                         (function () {
-                            var re = /'(item_scraped_count)': (\d*),/;
+                            // var re = /'(item_scraped_count)': (\d*),/;
+                            var re = /Scraped from/igm;
                             var str = dados;
                             var match = re.exec(str);
                             // if ($scope.fileResume.totais['itemsRaspados'] == undefined) $scope.fileResume.totais['itemsRaspados'] = 0;
                             // $scope.fileResume.totais['itemsRaspados'] += parseInt($scope.fileResume.itemsRaspados[index]);
-                            $scope.fileResume.itemsRaspados[index] = (match[2] == null) ? 0 : match[2];
+                            // $scope.fileResume.itemsRaspados[index] = (match[2] == null) ? 0 : match[2];
+                            $scope.fileResume.itemsRaspados[index] = str.match(re).length;
                         })();
-                        // console.log($scope.fileResume);
                     });
                 /*
                  //CORS

@@ -3,6 +3,7 @@
     angular.module('estagio', [])
         .controller('MainController', function ($scope, $http, $filter, $interval, $timeout) {
             $scope.serverScrapyd = 'http://localhost:6800/';
+            // var serverScrapydJobsDir = '/home/osboxes/Documents/scrapyd/items';
             var serverScrapydJobsDir = '/scrapyd/jobs/';
             var client = 'http://localhost/estagio/';
 

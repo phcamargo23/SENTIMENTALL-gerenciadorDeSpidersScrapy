@@ -3,7 +3,7 @@
     angular.module('estagio', [])
         .controller('MainController', function ($scope, $http, $filter, $interval, $timeout) {
             $scope.serverScrapyd = 'http://localhost:6800/';
-            // var serverScrapydJobsDir = '/home/osboxes/Documents/scrapyd/items';
+            // var serverScrapydJobsDir = '/home/osboxes/Documents/scrapyd/jobs/';
             var serverScrapydJobsDir = '/scrapyd/jobs/';
             var client = 'http://localhost/estagio/';
 
@@ -18,14 +18,6 @@
                 });
             }
 
-            function autoConsultJob(project, spider, jobLog) {
-                var log = client + 'getFile.php?file=' + $scope.serverScrapyd + jobLog;
-                $http.get(log)
-                    .success(function (dados) {
-                    });
-            }
-
-
             $scope.listSpidersAndJobs = function (project) {
                 $scope.listSpiders(project);
                 $scope.listJobs(project);
@@ -36,6 +28,7 @@
                 $scope.listJobs($scope._project);
 
                 $scope._spider = spider;
+                $('#spider_content').html('');
                 // $scope.fileResume.totais['itemsRaspados'] = 0;
             }
 
@@ -162,43 +155,43 @@
                     });
             }
 
-            $scope.listFiles2 = function (spider) {
-                var file = $scope.serverScrapyd + "items/" + $scope._project + "/" + spider;
-
-                $http({
-                    url: client + 'getFile.php',
-                    dataType: 'text',
-                    method: "POST",
-                    params: {
-                        'file': file
-                    }
-                }).then(function (response) {
-                    if (response.status == "200") {
-                        var re = /(a href\=\")([^\?\"]*)(\")/gmi;
-                        var str = response.data;
-                        var match;
-                        var result = [];
-
-                        while ((match = re.exec(str)) !== null) {
-                            result.push(match[2]);
-                        }
-                        $scope.files = result;
-                    }
-                    else {
-                        alert("Error while scheduling job : " + response.data.message);
-                        //console.log(response);
-                    }
-                });
-            }
-
-            $scope.clearState = function (project, spider) {
-                var dir = serverScrapydJobsDir + '/state';
-
-                $http.get(client + 'delDir.php?dir=' + dir)
-                    .success(function (dados) {
-                        alert(dados);
-                    });
-            }
+            // $scope.listFiles2 = function (spider) {
+            //     var file = $scope.serverScrapyd + "items/" + $scope._project + "/" + spider;
+            //
+            //     $http({
+            //         url: client + 'getFile.php',
+            //         dataType: 'text',
+            //         method: "POST",
+            //         params: {
+            //             'file': file
+            //         }
+            //     }).then(function (response) {
+            //         if (response.status == "200") {
+            //             var re = /(a href\=\")([^\?\"]*)(\")/gmi;
+            //             var str = response.data;
+            //             var match;
+            //             var result = [];
+            //
+            //             while ((match = re.exec(str)) !== null) {
+            //                 result.push(match[2]);
+            //             }
+            //             $scope.files = result;
+            //         }
+            //         else {
+            //             alert("Error while scheduling job : " + response.data.message);
+            //             //console.log(response);
+            //         }
+            //     });
+            // }
+            //
+            // $scope.clearState = function (project, spider) {
+            //     var dir = serverScrapydJobsDir + '/state';
+            //
+            //     $http.get(client + 'delDir.php?dir=' + dir)
+            //         .success(function (dados) {
+            //             alert(dados);
+            //         });
+            // }
 
             $scope.clearAll = function () {
                 // var dir = '/home/osboxes/Documents/scrapyd/items';

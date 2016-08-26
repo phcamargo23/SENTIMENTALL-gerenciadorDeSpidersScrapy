@@ -27,7 +27,7 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">
-                    <img alt="Scrapy Spiders Manager" src="...">
+                    <img alt="Scrapy Spiders Manager">
                 </a>
             </div>
             <p class="navbar-text navbar-right"><a href="#" ng-click="clearAll()" class="navbar-link">Limpar memória</a>
@@ -135,8 +135,8 @@
                                 <a ng-href="#"
                                    ng-click="showFileHighlighter(serverScrapyd + 'logs/' + _project + '/' + _spider + '/' + (file | limitTo:file.length-4) + '.log')">
                                     log </a>
-                                |
                                 <div ng-show="fileResume.ultimoEstado[$index] == 'Interrompido'">
+                                    |
                                     <a ng-href="#"
                                        ng-click="scheduleWithState(_spider, file | limitTo:file.length-4)">
                                         continuar </a>

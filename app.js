@@ -130,7 +130,7 @@
                 }).then(function (response) {
                     if (response.status == "200") {
                         $scope.jobs.splice($scope.jobs.indexOf(job), 1);
-                        alert("Job cancelado com sucesso!");
+                        alert("Job interrompido com sucesso!");
                         $scope.listFilesAndJobs($scope._spider);
                     }
                     else {
@@ -204,8 +204,8 @@
             }
 
             $scope.showFileHighlighter = function (file) {
-                console.log(file);
-                // $('#spider_file').html(file);
+                // console.log(file);
+                $('#spider_file').html(file);
                 launchSpinner("centerSpin", null, null);
                 $.ajax({
                     type: "POST",

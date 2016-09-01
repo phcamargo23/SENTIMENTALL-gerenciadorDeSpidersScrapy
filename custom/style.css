@@ -9,3 +9,7 @@ body {
 .selected{
   background-color: #8dd189 ! important;
 }
+
+.table td, tr, th {
+  text-align: center;
+}

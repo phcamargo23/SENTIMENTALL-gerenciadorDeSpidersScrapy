@@ -50,11 +50,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="project in projects">
+                        <tr ng-repeat="project in projects" ng-class="project == _project ? 'selected' : ''">
                             <td>{{$index}}</td>
                             <td>{{project}}</td>
                             <td>
-                                <button type="button" class="btn btn-primary btn-xs" ng-click="listSpiders(project)">
+                                <button type="button" class="btn btn-primary btn-xs" ng-click="listSpiders(project)"
+                                        title="Listar spiders">
                                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                 </button>
                             </td>
@@ -75,19 +76,19 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="spider in spiders">
+                        <tr ng-repeat="spider in spiders" ng-class="spider == _spider ? 'selected' : ''">
                             <td>{{$index}}</td>
                             <td>{{spider}}</td>
                             <td>
-                                <button type="button" class="btn btn-primary btn-xs"
-                                        ng-click="listFilesAndJobs(spider)">
+                                <button type="button" class="btn btn-primary btn-xs" ng-click="listFilesAndJobs(spider)"
+                                        title="Listar jobs">
                                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                 </button>
                                 <!--<button type="button" class="btn btn-primary btn-xs" ng-click="schedule(spider)">-->
                                 <!--<span class="glyphicon glyphicon-play" aria-hidden="true"></span>-->
                                 <!--</button>-->
                                 <button type="button" class="btn btn-primary btn-xs"
-                                        ng-click="scheduleWithState(spider)">
+                                        ng-click="scheduleWithState(spider)" title="Executar spider">
                                     <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                                 </button>
                             </td>
@@ -100,15 +101,15 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="panel panel-primary">
-                    <div class="panel-heading">Arquivos</div>
+                    <div class="panel-heading">Jobs</div>
                     <table class="table table-hover table-striped">
                         <thead>
                         <tr>
                             <th>#</th>
                             <th>Job</th>
-                            <th>Estado</th>
-                            <th>Itens extraídos</th>
-                            <th>Ações</th>
+                            <th>Resumo</th>
+                            <th>Arquivos</th>
+                            <th>Continuar</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -116,14 +117,19 @@
                             <td>{{$index+1}}</td>
                             <td>{{file | limitTo:file.length-4}}</td>
                             <td>
-                                <a ng-href="#" ng-click="showFileResume($index, file | limitTo:file.length-3)">
-                                    <div ng-show="fileResume.ultimoEstado[$index] == undefined">
-                                        ver
-                                    </div>
-                                </a>
-                                {{fileResume.ultimoEstado[$index]}}
+                                <!--<a ng-href="#" ng-click="showFileResume($index, file | limitTo:file.length-3)">-->
+                                <div ng-show="fileResume.ultimoEstado[$index] == undefined">
+                                    <button type="button" class="btn btn-primary btn-xs"
+                                            ng-click="showFileResume($index, file | limitTo:file.length-3)"
+                                            title="Visualizar estado e quantidade de itens extraídos"><span
+                                            class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>
+                                </div>
+                                <!--</a>-->
+                                <div ng-show="fileResume.ultimoEstado[$index] != undefined">
+                                    {{fileResume.ultimoEstado[$index]}}:
+                                    {{fileResume.itemsRaspados[$index]}} item(s) extraídos.
+                                </div>
                             </td>
-                            <td>{{fileResume.itemsRaspados[$index]}}</td>
                             <td>
                                 <!--<button type="button" class="btn btn-primary btn-xs" ng-click="showFileResume($index, file | limitTo:file.length-3)"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>-->
                                 <!--<a ng-href="{{serverScrapyd}}items/{{_project}}/{{_spider}}/{{file}}"> Items </a>-->
@@ -135,8 +141,9 @@
                                 <a ng-href="#"
                                    ng-click="showFileHighlighter(serverScrapyd + 'logs/' + _project + '/' + _spider + '/' + (file | limitTo:file.length-4) + '.log')">
                                     log </a>
+                            </td>
+                            <td>
                                 <div ng-show="fileResume.ultimoEstado[$index] == 'Interrompido'">
-                                    |
                                     <a ng-href="#"
                                        ng-click="scheduleWithState(_spider, file | limitTo:file.length-4)">
                                         continuar </a>

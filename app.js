@@ -205,7 +205,7 @@
 
             $scope.showFileHighlighter = function (file) {
                 // console.log(file);
-                $('#spider_file').html(file);
+                $('#spider_file').html('<a href="'+file+'">' + file + '</a>' );
                 launchSpinner("centerSpin", null, null);
                 $.ajax({
                     type: "POST",

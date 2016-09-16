@@ -186,6 +186,7 @@
                         <tr ng-repeat="job in jobs">
                             <td>{{$index+1}}</td>
                             <td>{{job.job}}</td>
+                            <td>{{job.resume}}</td>
                             <td>
                                 <a ng-href="#"
                                    ng-click="showFileHighlighter(serverScrapyd + 'items/' + job.project + '/' + job.spider + '/' + job.job + '.csv')">
@@ -195,7 +196,6 @@
                                    ng-click="showFileHighlighter(serverScrapyd + 'logs/' + job.project + '/' + job.spider + '/' + job.job + '.log')">
                                     log </a>
                             </td>
-                            <td>{{job.resume}}</td>
                             <td>
                                 <!--<a ng-href="#"-->
                                 <!--ng-click="cancel(job)">-->
